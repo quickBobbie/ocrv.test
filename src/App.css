@@ -200,3 +200,7 @@ footer h5 {
   margin: 20px auto;
   width: 200px;
 }
+
+.login_form_message {
+  color: #f44336;
+}

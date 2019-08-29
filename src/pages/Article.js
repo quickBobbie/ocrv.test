@@ -1,16 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class ArticlePage extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <article>
-                <h2>{ this.props.location.state.title }</h2>
-                <p>{ this.props.location.state.body }</p>
-            </article>
-        )
-    }
+export default function (props) {
+    return (
+        <article>
+            <h2>{ props.location.state.title }</h2>
+            <p>{ props.location.state.body }</p>
+        </article>
+    )
 }

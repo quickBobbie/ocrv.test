@@ -1,15 +1,15 @@
 export default function (isAuth) {
     return [
         {
-            title: "Main",
+            title: "Главная",
             href: "/"
         },
         {
-            title: "News",
+            title: "Новости",
             href: "/news"
         },
         {
-            title: isAuth ? "Profile" : "Login",
+            title: isAuth ? "Профиль" : "Войти",
             href: isAuth ? "/profile" : "/login"
         }
     ]

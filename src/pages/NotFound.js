@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class NotFoundPage extends Component {
-    render() {
-        return (
-            <div className="page-align">
-                <h2>404</h2>
-                <span>Page not found!</span>
-            </div>
-        )
-    }
+export default function() {
+    return (
+        <div className="page-align">
+            <h2>404</h2>
+            <span>Страница не существует!</span>
+        </div>
+    )
 }

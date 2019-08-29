@@ -2,13 +2,12 @@ export default function(state = {}, action) {
     switch (action.type) {
         case 'INPUT': {
             state.inputs[action.name].value = action.value;
-            break;
+            return state;
         }
         case 'MESSAGE': {
             state.message = action.message;
-            break;
+            return state;
         }
+        default: return state;
     }
-
-    return state;
 }

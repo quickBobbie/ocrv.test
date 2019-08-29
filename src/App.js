@@ -47,7 +47,7 @@ export default class App extends Component {
     render() {
         return (
             <BrowserRouter>
-                <Header title="OCRV" subtitle="TEST APP" menu={ this.store.getState().menu }/>
+                <Header title="ОЦРВ" subtitle="ТЕСТОВОЕ ЗАДАНИЕ" menu={ this.store.getState().menu }/>
 
                 <div className="container">
                     <Switch>
@@ -64,7 +64,7 @@ export default class App extends Component {
                     </Switch>
                 </div>
 
-                <Footer title="&copy; Sergey Ushchanskiy" menu={ this.store.getState().menu } />
+                <Footer title="&copy; Сергей Ущанский" menu={ this.store.getState().menu } />
             </BrowserRouter>
         )
     }
