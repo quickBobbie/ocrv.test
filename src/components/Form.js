@@ -1,57 +1,26 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Input from './Input';
 
-export default class Form extends Component {
-    constructor(props) {
-        super(props);
+export default function(props) {
+    return (
+        <form className={ props.className } onSubmit={ props.handleSubmit }>
+            <span>{ props.state.message }</span>
+            {
+                Object.keys(props.state.inputs).map((input, index) => {
+                    input = props.state.inputs[input];
+                    return <Input
+                        key={ index }
+                        name={ input.name }
+                        value={ input.value }
+                        type={ input.type }
+                        required={ input.required }
+                        title={ input.title }
+                        handleChange={ props.handleChange }
+                    />
+                })
+            }
 
-        this.state = {
-            inputs: this.props.inputs,
-            message: ""
-        };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleSubmit(event) {
-        event.preventDefault();
-
-        let message = this.props.handleSubmit(this.state.inputs);
-
-        if (message) {
-            this.setState({ message: message });
-        }
-    }
-
-    handleChange(event) {
-        let state = this.state;
-        state.inputs[event.target.id].value = event.target.value;
-
-        this.setState(state);
-    }
-
-    render() {
-        return (
-            <form className={ this.props.className } onSubmit={ this.handleSubmit }>
-                <span>{ this.state.message }</span>
-                {
-                    this.state.inputs.map((input, index) => {
-                        return <Input
-                            key={ index }
-                            id={ index }
-                            name={ input.name }
-                            value={ input.value }
-                            type={ input.type }
-                            required={ input.required }
-                            title={ input.title }
-                            handleChange={ this.handleChange }
-                        />
-                    })
-                }
-
-                <button type="submit" className="submit">{ this.props.submit }</button>
-            </form>
-        )
-    }
+            <button type="submit" className="submit">{ props.submit }</button>
+        </form>
+    )
 }

@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import { createStore } from 'redux';
+
+import reducer from '../reducers/login';
+import action from '../actions/login';
+
 import Form from '../components/Form';
+
 import fakeAuth from '../fake/login';
 import inputs from '../props/login';
 
@@ -9,30 +14,41 @@ export default class LoginPage extends Component {
     constructor(props) {
         super(props);
 
+        this.store = createStore(reducer, { inputs, message: "" });
+
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
-    getInput(inputs, { field, value }) {
-        let [input] = inputs.filter(input => {
-            return input[field] === value;
-        });
+    handleSubmit(event) {
+        event.preventDefault();
 
-        return input;
-    }
-
-    handleSubmit(inputs) {
-        let username = this.getInput(inputs, { field: "name", value: "username" });
-        let password = this.getInput(inputs, { field: "name", value: "password" });
+        const inputs = this.store.getState().inputs;
         let data = {
-            username: username.value,
-            password: password.value,
+            username: inputs.username.value,
+            password: inputs.password.value,
         };
 
         if (data.username !== fakeAuth.username || data.password !== fakeAuth.password) {
             this.props.signIn(false);
-            return "Invalid data!";
+            this.store.dispatch(action().message("Invalid data!"))
         } else {
             this.props.signIn(true);
+        }
+    }
+
+    handleChange(event) {
+        this.store.dispatch(action().input(event.target));
+    }
+
+    componentDidMount() {
+        this.store.subscribe(() => this.forceUpdate());
+    }
+
+    componentWillUnmount() {
+        let inputs = this.store.getState().inputs;
+        for (let key in inputs) {
+            this.store.dispatch(action().input({name: inputs[key].name, value: ""}));
         }
     }
 
@@ -40,7 +56,13 @@ export default class LoginPage extends Component {
         return(
             <div className="page-align">
                 <h2>Login page</h2>
-                <Form inputs={ inputs } handleSubmit={ this.handleSubmit } submit="Login" className="login_form"/>
+                <Form
+                    state={ this.store.getState() }
+                    handleChange={ this.handleChange }
+                    handleSubmit={ this.handleSubmit }
+                    submit="Login"
+                    className="login_form"
+                />
             </div>
         )
     }

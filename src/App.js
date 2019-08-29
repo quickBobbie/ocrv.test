@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
+import { createStore } from 'redux';
+
+import reducer from './reducers/app';
+import action from './actions/app';
 
 import Main from './pages/Main';
 import News from './pages/News';
@@ -19,35 +23,31 @@ export default class App extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            isAuth: localStorage.getItem("isAuth") === "true",
-            menu: MenuProps(localStorage.getItem("isAuth") === "true")
-        };
+        this.store = createStore(reducer, {
+            isAuth: localStorage.getItem("isAuth") === 'true',
+            menu: MenuProps(localStorage.getItem("isAuth") === 'true')
+        });
 
         this.signIn = this.signIn.bind(this);
         this.logOut = this.logOut.bind(this);
     }
 
     signIn(isAuth) {
-        localStorage.setItem("isAuth", isAuth);
-        this.setState({
-            isAuth: isAuth,
-            menu: MenuProps(isAuth)
-        });
+        this.store.dispatch(action(isAuth, MenuProps(isAuth)));
     }
 
     logOut() {
-        localStorage.setItem("isAuth", false);
-        this.setState({
-            isAuth: false,
-            menu: MenuProps(false)
-        });
+        this.store.dispatch(action(false, MenuProps(false)));
+    }
+
+    componentDidMount() {
+        this.store.subscribe(() => this.forceUpdate());
     }
 
     render() {
         return (
             <BrowserRouter>
-                <Header title="OCRV" subtitle="TEST APP" menu={ this.state.menu }/>
+                <Header title="OCRV" subtitle="TEST APP" menu={ this.store.getState().menu }/>
 
                 <div className="container">
                     <Switch>
@@ -55,16 +55,16 @@ export default class App extends Component {
                         <Route path="/news/:id" component={ Article }/>
                         <Route path="/news" component={ News }/>
 
-                        { !this.state.isAuth && <Route path="/login" render={ () => { return <Login signIn={ this.signIn } /> } }/> }
-                        { this.state.isAuth && <Route path="/login" render={ () => { return <Redirect to="/profile"/> } }/> }
-                        { this.state.isAuth && <Route path="/profile" render={ () => { return <Profile logOut={ this.logOut } /> } }/> }
-                        { !this.state.isAuth && <Route path="/profile" render={ () => { return <Redirect to="/login"/> } }/> }
+                        { !this.store.getState().isAuth && <Route path="/login" render={ () => { return <Login signIn={ this.signIn } /> } }/> }
+                        { this.store.getState().isAuth && <Route path="/login" render={ () => { return <Redirect to="/profile"/> } }/> }
+                        { this.store.getState().isAuth && <Route path="/profile" render={ () => { return <Profile logOut={ this.logOut } /> } }/> }
+                        { !this.store.getState().isAuth && <Route path="/profile" render={ () => { return <Redirect to="/login"/> } }/> }
 
                         <Route path="*" component={ NotFound }/>
                     </Switch>
                 </div>
 
-                <Footer title="&copy; Sergey Ushchanskiy" menu={ this.state.menu } />
+                <Footer title="&copy; Sergey Ushchanskiy" menu={ this.store.getState().menu } />
             </BrowserRouter>
         )
     }
